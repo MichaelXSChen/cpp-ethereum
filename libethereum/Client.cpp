@@ -87,7 +87,6 @@ Client::~Client()
 void Client::init(p2p::Host* _extNet, fs::path const& _dbPath, fs::path const& _snapshotDownloadPath, WithExisting _forceAction, u256 _networkId)
 {
     DEV_TIMED_FUNCTION_ABOVE(500);
-
     // Cannot be opened until after blockchain is open, since BlockChain may upgrade the database.
     // TODO: consider returning the upgrade mechanism here. will delaying the opening of the blockchain database
     // until after the construction.
@@ -121,7 +120,9 @@ void Client::init(p2p::Host* _extNet, fs::path const& _dbPath, fs::path const& _
     // create Ethereum capability only if we're not downloading the snapshot
     if (_snapshotDownloadPath.empty())
     {
-        auto host = _extNet->registerCapability(
+//        std::cout<<"here"<<std::endl;
+
+        auto host = _extNet->registerCapability(//xs:where the Ethereum Host Object is created.
             make_shared<EthereumHost>(bc(), m_stateDB, m_tq, m_bq, _networkId));
         m_host = host;
 
@@ -130,6 +131,7 @@ void Client::init(p2p::Host* _extNet, fs::path const& _dbPath, fs::path const& _
     }
 
     // create Warp capability if we either download snapshot or can give out snapshot
+    //xs: igonre it for current.
     auto const importedSnapshot = importedSnapshotPath(_dbPath, bc().genesisHash());
     bool const importedSnapshotExists = fs::exists(importedSnapshot);
     if (!_snapshotDownloadPath.empty() || importedSnapshotExists)
@@ -142,11 +144,14 @@ void Client::init(p2p::Host* _extNet, fs::path const& _dbPath, fs::path const& _
 
     if (_dbPath.size())
         Defaults::setDBPath(_dbPath);
+
+
     doWork(false);
 }
 
 ImportResult Client::queueBlock(bytes const& _block, bool _isSafe)
 {
+    std::cout<<"queuing block"<<std::endl;
     if (m_bq.status().verified + m_bq.status().verifying + m_bq.status().unverified > 10000)
         this_thread::sleep_for(std::chrono::milliseconds(500));
     return m_bq.import(&_block, _isSafe);
@@ -298,7 +303,7 @@ void Client::reopenChain(ChainParams const& _p, WithExisting _we)
     if (wasSealing)
         startSealing();
 }
-
+//xs: add a callback function in the queue.
 void Client::executeInMainThread(function<void ()> const& _function)
 {
     DEV_WRITE_GUARDED(x_functionQueue)
@@ -451,7 +456,7 @@ void Client::syncTransactionQueue()
             appendFromNewPending(newPendingReceipts[i], changeds, m_postSeal.pending()[i].sha3());
 
     // Tell farm about new transaction (i.e. restart mining).
-    onPostStateChanged();
+    onPostStateChanged(); //xs: notify conds
 
     // Tell watches about the new transactions.
     noteChanged(changeds);
@@ -698,6 +703,7 @@ void Client::doWork(bool _doWait)
         std::unique_lock<std::mutex> l(x_signalled);
         m_signalled.wait_for(l, chrono::seconds(1));
     }
+
 }
 
 void Client::tick()

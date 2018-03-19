@@ -124,7 +124,7 @@ private:
 
 	u256 m_networkId;
 
-	h256 m_latestBlockSent;
+	h256 m_latestBlockSent; //sent to the peers
 	h256Hash m_transactionsSent;
 
 	std::unordered_set<p2p::NodeID> m_banned;

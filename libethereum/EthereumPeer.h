@@ -76,7 +76,7 @@ public:
 };
 
 /**
- * @brief The EthereumPeer class
+ * @brief The EthereumPeer ``
  * @todo Document fully.
  * @todo make state transitions thread-safe.
  */

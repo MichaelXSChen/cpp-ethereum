@@ -120,6 +120,7 @@ class WebThreeDirect: public NetworkFace
 public:
     /// Constructor for private instance. If there is already another process on the machine using @a _dbPath, then this will throw an exception.
     /// ethereum() may be safely static_cast()ed to a eth::Client*.
+    //xs: dbpath is the file system dir path .
     WebThreeDirect(std::string const& _clientVersion, boost::filesystem::path const& _dbPath,
         boost::filesystem::path const& _snapshotPath, eth::ChainParams const& _params,
         WithExisting _we = WithExisting::Trust,

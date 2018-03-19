@@ -135,6 +135,7 @@ void Worker::workLoop()
 {
 	while (m_state == WorkerState::Started)
 	{
+//		std::cout<<"loop"<<std::endl;
 		if (m_idleWaitMs)
 			this_thread::sleep_for(chrono::milliseconds(m_idleWaitMs));
 		doWork();

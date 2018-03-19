@@ -58,6 +58,7 @@ EthereumPeer::EthereumPeer(std::shared_ptr<SessionFace> _s, HostCapabilityFace* 
     Capability(_s, _h, _i),
     m_peerCapabilityVersion(_cap.second)
 {
+    std::cout<<"created eth Peer"<<std::endl;
     session()->addNote("manners", isRude() ? "RUDE" : "nice");
 }
 

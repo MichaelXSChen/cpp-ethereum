@@ -329,6 +329,7 @@ private:
 
 	/// The nodes to which we are currently connected. Used by host to service peer requests and keepAlivePeers and for shutdown. (see run())
 	/// Mutable because we flush zombie entries (null-weakptrs) as regular maintenance from a const method.
+	//xs: the host we are connected.
 	mutable std::unordered_map<NodeID, std::weak_ptr<SessionFace>> m_sessions;
 	mutable RecursiveMutex x_sessions;
 	

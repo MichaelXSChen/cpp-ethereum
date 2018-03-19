@@ -377,6 +377,7 @@ EthereumHost::EthereumHost(BlockChain const& _ch, OverlayDB const& _db, Transact
 	m_networkId	(_networkId),
 	m_hostData(make_shared<EthereumHostData>(m_chain, m_db))
 {
+	std::cout<<_networkId<<std::endl;
 	// TODO: Composition would be better. Left like that to avoid initialization
 	//       issues as BlockChainSync accesses other EthereumHost members.
 	m_sync.reset(new BlockChainSync(*this));
@@ -423,13 +424,15 @@ void EthereumHost::doWork()
 {
 	bool netChange = ensureInitialised();
 	auto h = m_chain.currentHash();
+    //std::cout<<"current_hash"<<h<<std::endl;
+
 	// If we've finished our initial sync (including getting all the blocks into the chain so as to reduce invalid transactions), start trading transactions & blocks
 	if (!isSyncing() && m_chain.isKnown(m_latestBlockSent))
 	{
-		if (m_newTransactions)
+		if (m_newTransactions) //xs: someone called noteNewTransactions
 		{
 			m_newTransactions = false;
-			maintainTransactions();
+			maintainTransactions(); //xs:
 		}
 		if (m_newBlocks)
 		{
@@ -555,7 +558,7 @@ void EthereumHost::maintainBlocks(h256 const& _currentHash)
 
 			h256s blocks = get<0>(m_chain.treeRoute(m_latestBlockSent, _currentHash, false, false, true));
 
-			auto s = randomSelection(25, [&](EthereumPeer* p){
+			auto s = randomSelection(25, [&](EthereumPeer* p){//xs: random select peers to send
 				DEV_GUARDED(p->x_knownBlocks)
 					return !p->m_knownBlocks.count(_currentHash);
 				return false;

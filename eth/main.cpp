@@ -537,7 +537,7 @@ int main(int argc, char** argv)
     {
         string m = vm["mining"].as<string>();
         if (isTrue(m))
-            mining = ~(unsigned)0;
+            mining = ~(unsigned)0; //xs: parse from parameter about mining.
         else if (isFalse(m))
             mining = 0;
         else
@@ -844,7 +844,7 @@ int main(int argc, char** argv)
     if (g_logVerbosity > 0)
         cout << EthGrayBold "cpp-ethereum, a C++ Ethereum client" EthReset << "\n";
 
-    m.execute();
+    m.execute(); //xs: execute
 
     fs::path secretsPath;
     if (testingMode)
@@ -1085,7 +1085,7 @@ int main(int argc, char** argv)
 
     if (bootstrap || !remoteHost.empty() || enableDiscovery || listenSet || !preferredNodes.empty())
     {
-        web3.startNetwork();
+        web3.startNetwork(); //xs: start network.
         cout << "Node ID: " << web3.enode() << "\n";
     }
     else
